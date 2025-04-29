@@ -1,0 +1,7 @@
+dave.log
+venv
+__pycache__
+dave-env
+captured_data/
+.goutput*
+captured_data*

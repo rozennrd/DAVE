@@ -1,0 +1,4 @@
+Calibration du capteur d'humidité du solLes valeurs lues sont 770 dans l'air, et 771 dans l'eau.
+On considère 770 à 770.3333333333334 comme étant sec 
+On considère 770.3333333333334 à 770.6666666666666 comme étant humide 
+On considère 770.6666666666666 à 771 comme étant très mouillé / de l'eauCalibration du capteur de luminositéLes valeurs lues sont 316 au soleil, et 317 dans l'obscurité.
