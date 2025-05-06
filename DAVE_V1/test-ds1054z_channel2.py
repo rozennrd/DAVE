@@ -1,4 +1,9 @@
 from ds1054z import DS1054Z
+
+"""
+Fichier de test / sandbox pour la librairie ds1054z python.
+"""
+
 print("Entered Script channel2")
 # ip = input("Enter device ip address :")
 # if not ip:

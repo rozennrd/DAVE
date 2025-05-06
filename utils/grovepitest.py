@@ -2,6 +2,12 @@
 from grovepi import *
 from time import sleep
 
+"""
+Fichier permettant de tester le grovepi en isolation. 
+Jamais utilisé dans le code de DAVE mais sert de sandbox pour se familiariser avec la librairie python grovepi
+et tester de nouvelles choses
+"""
+
 # Configuration des capteurs d'environnement 
 dht_sensor_port = 7 # connect the DHt sensor to port 7
 dht_sensor_type = 0 # use 0 for the blue-colored sensor and 1 for the white-colored sensor

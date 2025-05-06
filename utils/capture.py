@@ -4,7 +4,7 @@ from datetime import datetime as dt
 import pandas as pd
 import csv
 
-
+@DeprecationWarning
 def capture_with_timestamps(scope, logger, duration=10, channels=["CHAN1"], mode="NORMal", with_sensor_data=False, max_fails=5):
 	"""
 	Capture les données d'un canal avec des timestamps machine à chaque seconde.

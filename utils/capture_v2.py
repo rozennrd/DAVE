@@ -5,7 +5,7 @@ import pandas as pd
 import csv
 import dwfpy as dwf
 
-def capture_with_timestamps(csv_file, logger, device1, device2, duration=10, with_sensor_data=False, max_fails=5):
+def capture_with_timestamps(csv_file, logger, device1, device2, duration=0, with_sensor_data=False, max_fails=5):
 	"""
 	Capture les données d'un canal avec des timestamps machine à chaque seconde.
 	Capture également les données du grovepi. Les capteurs pris en compte sont : 
@@ -13,11 +13,15 @@ def capture_with_timestamps(csv_file, logger, device1, device2, duration=10, wit
 	- Luminosité : A0
 	- humidité du sol : A2
 
+	:param csv_file: nom du fichier dans lequel il faut enregistrer les données
+	:param logger: Logger qui servira à logger les erreurs dans un fichier de logs
+	:param device1: oscilloscope Analog Digital 1
+	:param device2: le deuxième oscilloscope Analog Digital.
 	:param float duration: Durée en secondes pendant laquelle capturer les données. Si 0, capture indéfiniment jusqu'à ^C
 	:param str channel: Le canal à capturer (par exemple, "CHAN1").
-	:param boolean with_sensor_data: si true, capture les données du grovepi et les ajoute dans le dataframe
-	:return: Liste contenant des dictionnaires {"voltage": value, "timestamp": value}.
-	:rtype: list of dict
+	:param boolean with_sensor_data: si true, capture les données du grovepi et les ajoute dans le dataframe. Si false, les données du grovepi+ ne sont pas capturées
+	:param max_fails: nombre maximal d'erreurs de lecture tolérés avant la levée d'une exception
+    :return: None
 	"""
 	
 	start_time = time.time()  # Enregistre le temps de départ
@@ -30,6 +34,17 @@ def capture_with_timestamps(csv_file, logger, device1, device2, duration=10, wit
 	successive_io_light_sensor_fails = 0
 	successive_io_moisture_sensor_fails = 0
 
+
+	# Initialisation des oscilloscopes
+	scope1 = device1.analog_input
+	scope1[0].setup(range=0.020)
+	scope1[1].setup(range=0.020)
+	scope1.configure()
+	scope2 = device2.analog_input
+	scope2[0].setup(range=0.020)
+	scope2[1].setup(range=0.020)
+	scope2.configure()
+
 	if (with_sensor_data):
 		# Configuration des capteurs d'environnement 
 		dht_sensor_port = 7 # connect the DHt sensor to port 7
@@ -39,17 +54,9 @@ def capture_with_timestamps(csv_file, logger, device1, device2, duration=10, wit
 		soil_moisture_sensor_port= 1
 		light_sensor_port_nolight = 2
 
-	nb_channels = 4
+	nb_channels = 4 
 	
-	# handling devices
-	scope1 = device1.analog_input
-	scope1[0].setup(range=0.020)
-	scope1[1].setup(range=0.020)
-	scope1.configure()
-	scope2 = device2.analog_input
-	scope2[0].setup(range=0.020)
-	scope2[1].setup(range=0.020)
-	scope2.configure()
+
 	while time.time() - start_time < duration or duration == 0:
 		timestamp = dt.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 		
@@ -89,6 +96,7 @@ def capture_with_timestamps(csv_file, logger, device1, device2, duration=10, wit
 		for i in range (nb_channels) :
 				dict_to_append[f"chan{i+1}_voltage_V"] = voltages[i]
 		
+		# Capture des données des capteurs d'environnement
 		if(with_sensor_data): 
 			try:
 					[ temp,hum ] = dht(dht_sensor_port,dht_sensor_type)
