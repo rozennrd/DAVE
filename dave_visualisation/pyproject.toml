@@ -1,0 +1,13 @@
+[project]
+name = "dave_ig"
+version = "0.1.0"
+description = "Visualisation interactive de données électrophysiologiques végétales"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.setuptools]
+packages = ["dave_ig"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

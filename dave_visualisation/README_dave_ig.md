@@ -1,17 +1,17 @@
 # DAVE IG – Visualisation de l’électrophysiologie végétale
 
-Cette application **Tkinter / Matplotlib** permet d’explorer
+Cette application **modulaire** basée sur **Tkinter / Matplotlib** permet d’explorer
 interactivement les signaux électriques mesurés sur une plante ainsi que
 les capteurs environnementaux (température, humidités, luminosité).
 
-Version actuelle : **V2.7.2**
+Version actuelle : **V3.0 (modulaire)**
 
 ---
 
 ## Sommaire
 
 1. [Fonctionnalités](#fonctionnalités)  
-2. [Structure du dépôt](#structure-du-dépôt)  
+2. [Structure du paquet](#structure-du-paquet)  
 3. [Format du fichier CSV](#format-du-fichier-csv)  
 4. [Installation](#installation)  
 5. [Exécution rapide](#exécution-rapide)  
@@ -34,25 +34,34 @@ Version actuelle : **V2.7.2**
 - Calcul natif du % humidité du sol (linéarisation _V<sub>sec</sub>_
   ↔ _V<sub>eau</sub>_).
 - Interface plein‑écran et menu latéral extensible.
+- **Architecture modulaire** avec séparation claire des responsabilités.
 
 ---
 
-## Structure du dépôt
+## Structure du paquet
 
 ```
 .
-├── IG V2.7.2.py      # Script principal (single‑file)
-├── README.md         # Ce document
-└── data_csv/
-    └── captured_data_YYYY‑MM‑DD_HH‑MM‑SS.csv
+├── pyproject.toml        # Configuration editable install
+├── requirements.txt      # Dépendances Python
+├── README.md             # Ce document
+└── dave_ig/
+    ├── app.py            # Point d’entrée principal
+    ├── config.py         # Constantes globales
+    ├── dialog.py         # Fenêtre Tkinter de configuration
+    ├── gui.py            # Interface graphique
+    ├── io_tools.py       # Lecture CSV, humidité sol
+    ├── mpl_tools.py      # Aides Matplotlib
+    ├── overlay.py        # Courbes secondaires (tendance, capteurs)
+    ├── plot_sensor.py    # Tracés environnementaux
+    ├── plot_voltage.py   # Tracés tensions
+    ├── signal_tools.py   # Statistiques, filtrage, etc.
+    └── __init__.py
 ```
 
 ---
 
 ## Format du fichier CSV
-
-Chaque ligne correspond à un échantillon horodaté. La première colonne
-**doit** être `timestamp` ou être utilisable comme index temporel.
 
 | Colonne                     | Unité      | Description                                |
 |-----------------------------|------------|--------------------------------------------|
@@ -64,36 +73,17 @@ Chaque ligne correspond à un échantillon horodaté. La première colonne
 | `light_intensity_baseline`  | a. u.      | Intensité lumineuse (baseline)             |
 | `light_intensity_stressor`  | a. u.      | Intensité lumineuse (stress)               |
 
-> **Astuce :** Un extrait est affiché ci‑dessous à titre d’exemple.
-
-```csv
-{df.head().to_csv(index=False, line_terminator='\n').strip()}
-```
+> Le fichier doit contenir une colonne `timestamp` ou une première colonne convertible en index temporel.
 
 ---
 
 ## Installation
 
-1. Créez un environnement :
-
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # sous Windows : .venv\Scripts\activate
-```
 
-2. Installez les dépendances :
-
-```bash
-pip install -r requirements.txt
-```
-
-> Fichier `requirements.txt` minimal :
-
-```
-matplotlib
-numpy
-pandas
-scipy
+pip install -e .
 ```
 
 ---
@@ -101,12 +91,12 @@ scipy
 ## Exécution rapide
 
 ```bash
-python "IG V2.7.2.py"
+python -m dave_ig.app
 ```
 
-1. Sélectionnez un CSV.  
-2. Réglez les paramètres dans la boîte de dialogue.  
-3. Profitez !
+1. Sélectionnez un fichier CSV.  
+2. Réglez les paramètres de visualisation.  
+3. Profitez de l’analyse interactive !
 
 ---
 
